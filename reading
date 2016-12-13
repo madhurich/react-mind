@@ -1,0 +1,218 @@
+PASSING DATA FROM PARENT COMPONENT TO THE CHILD COMPONENT 
+PROPS
+In react we can pass in values from a parent component
+into a child component using props.
+1.look into main.js file line 17 where 
+			<Home place={"india"} block={20} inHome={inHome}></Home>
+			here place and inHome are properties that are passed through Main 
+			Component to the child component "Home" and inorder to display that
+			in the view we need to mention them like {this.props.<propname>}
+			in the child component
+
+VIRTUAL DOM
+
+REFER:"https://www.codecademy.com/articles/react-virtual-dom"
+"https://www.youtube.com/watch?v=Iw2BLUjQo1E"
+
+Generally in HTML, we have a DOM and that DOM is same is what ever the 
+technology we use either it may be React, Angular or what ever.
+BUT in React we have a virtual DOM, which means its just like a copy
+of a real DOM (real DOM is what we see on screen). Each DOM object 
+present in real DOM is present in Virtual DOM.
+-- when ever a change is done in the DOM in React, it doesn't directly go
+to the real DOM and change that instead it changes the entire Virtual DOM
+and then compares THIS new Virtual DOM with the old Virtual DOM, if
+it finds any difference between these both, that particular changed element
+will ONLY BE RE-RENDERED in the real DOM. 
+	Ex: in this line <p onMouseOver={this.changeColor.bind(this)}>Home-color: {this.state.color}</p>
+			in Home.js, when ever mouse is moved over this "p"
+			element the color value is changed to "green" due to 
+					changeColor(){
+		this.setState({
+			color: "green"
+		});
+	}
+	in the component and only that "p" element will be re-rendered NOT the entire DOM.
+	WE CAN ACTUALLY see this in the browser.
+			goto developer tools--click on three dots appearing vertically in the
+						top right corner--more tools--Rendering
+						then at the bottom after console tab you cna see
+						rendering tab, click on it then select the check box "pain flashing"
+						When an event occurs (onClick, onMouseOver..etc)
+						the element associated to that particular event will only be highlighted
+						in green.
+
+STATELESS COMPONENT
+In React, if we have component that doesn't have to do anything with
+its state. 
+Actually when the state gets changed in a component?
+	--when ever there are events and event handlers that handle the values of the 
+	props when an event occurs
+	So if there are no events, i.e if there is no need to define a state and obviously 
+	when there is no state there's no chance of changing the state.
+	In such cases a component is free from "state". Then these compoenents 
+	are called STATELESS COMPONENTS
+	When we discover such stateless components in our app, we can actually
+	explicitly define these as stateless which improves the performance.
+	See when there's no need of state here, why do we need to define the component
+	as if it might have a state, no poin in that right? So re declare them.
+	And these component have chance of getting props. 
+
+	WE can refactor the component to
+
+			NEW STATELESS COMPONENT(after change)
+
+			import React from 'react';
+
+export const Header = (props) => {
+	
+		return (
+				<div>
+					<ul><li>Home</li></ul>
+				</div>
+			);
+	
+}; 	
+
+		OLD COMPONENT (before change)
+		import React from 'react';
+
+export class Header extends React.Component{
+	render(){
+		return (
+				<div>
+					<ul><li>Home</li></ul>
+				</div>
+			);
+	}
+}
+
+PASSING DATA FROM THE CHILD COMPONENT TO THE PARENT COMPONENT
+REFER "https://www.youtube.com/watch?v=2teBTI0_eRw&spfreload=1"
+1. Using props we can pass data from a parent component to the child component
+as written in the beggining in the same file(look at the top). But using
+the same props we can indirectly pass or execute a functions or values
+from a child component to the parent component.
+--look into main.js file we decalred a function called
+greet, on line 8 
+			greet(){
+		alert("hello");
+	}
+	in the parent component ofcorse, but this will be executed in the parent 
+	component from the child component.
+	look into line 20 in main.js 
+			<Home place={"india"} block={40} inHome={inHome} greeting={this.greet}>	
+			greeting={this.greet}--> we are naming a property called "greeting"
+			and assigning it to the function greet defined above.
+			BUT this will ONLY be fired due to the child component
+			look into Home.js line 30
+					<button onClick={this.props.greeting}>Greet</button>
+						"this.props.greeting" will refer to the greeting in 
+						"greeting={this.greet}" in parent component "main"
+						which will execute the function called greet .
+						When the button is clicked in the child component
+						it fires the greet function to be executed in the parent component.
+						(THAT IS INDIRECTLY CHILD IS COMMUNICATING WITH PARENT
+						from child to the parent)
+
+WE can also pass new values from child component to the parent 
+component. 
+Loook into main.js--first you need to set the state
+of main component look this.state = {
+			initialHomeLink: "Home"
+		};
+		and the function to change the name is
+			changeHomeLink(newLinkHere){
+		this.setState({
+			initialHomeLink: newLinkHere
+		});
+	}
+to execute this funtion from the child as we did before
+we need to add this property
+changeHome={this.changeHomeLink.bind(this)} to the parent component's render
+look line 33 in main.js. And this will be fired from the child component's
+button look line 35 in Home.js file
+	
+<button onClick={this.changeHomeHere.bind(this)}>Change</button>
+the same state initialHomeLink will be changed in through the child component.
+REFER "https://www.youtube.com/watch?v=5Xew--ycx0o"	
+
+-->this process of changing the state of one 
+component from another component which is also 
+called CROSS COMPONENT COMMUNICATION (in our case the home component 
+changes the state of header component) becomes complex and unefficient when
+there are lot of components and when they are nested. So this problem can be solved
+using REDUX 
+
+-----
+LIFE CYCLE METHODS IN REACT
+1. componentWillMount
+		--this method will be executed when a component
+		is about to render, ie before a component renders on screen or 
+		before we actually see it on screen this will be executed.
+2. componentDidMount
+		--after the first method the component will be rendered
+		and therefore after the rendering of the component
+		this method will be executed.
+3. componentWillReceiveProps has (nextProps) cos it just receives props
+		--after the above two methods are done, if that rendered
+		component has some props that it should receive
+		in future from its parent component, then before actually it
+		receives them this method will be executed
+4. shouldComponentUpdate has (nextProps, nextState) cos its state will be changed
+due to the updated props 
+		--after the above methods, when the component receives the new props,
+		this will be executed and the old props will be changed to new props
+		AND THIS POINT OF TIME AFTER CHANGING THE PROPS, IF the method returns 
+				i) "true"
+		 		then the updated component will be RE-rendered and the later life cycle
+				methods will also be executed
+				ii) "false"
+				then the updated component will NOT be RE-rendered and the execution
+				of later life cycle methods will NOT be done.
+IF THE ABOVE METHOD RETURNS TRUE
+5. componentWillUpdate has (nextProps, nextState) cos it's still in the
+process of updating the component
+		--this is executed after fourth method and before actually
+		RE-rendering the updated component
+6. componentDidUpdate has (prevProps, prevState) cos the updated component is already
+RE-rendered and now in the current state the states and props used before will become 
+"prev"
+		--this is executed after the updated component RE-rendered on screen
+		and it has	
+7. componentWillUnmount
+		--this is executed when a component is about to be removed, i.e
+		before a components get removed from the web page this method gets
+		executed.
+
+REFER "https://www.youtube.com/watch?v=Oioo0IdoEls"
+--look into Home.js
+all the methods are declared, and when we look into the console
+first two mwthods are executed those can be seen on console.
+>When we try to change the state by mousing over "p" element
+in line <p onMouseOver={this.changeColor.bind(this)}>Home-color: {this.state.color}</p>
+we are changing the state and after changing the state "shouldComponentUpdate"
+is executed we can see on console. If this returns , 
+		i) true then the later 
+methods "5" and "6" are executed. when "5" is executed it has the updated state and consoles
+will update. Later after the updated component with new props is rendered
+"6" method is executed.
+		ii) false then the later mehtods will not be executed and it stops at method "4"
+		where it changed the state but he new component with updated props
+		is not RE-rendered.
+
+When a component is about to receive props method "3" will be executed
+look into 
+		<input type="text" value={this.state.initialHomeLink}
+						onChange={this.onInputChange.bind(this)}/>
+		in Home.js, here we are trying to change the props by sending the new
+		props to Header component to change the text "Home" in header,
+		so when we try changing the input here we can see that method "3"
+		is being executed on console.
+
+look into main.js line 49
+<button onClick={this.addRemove.bind(this)}>Remove/Add</button>	
+when the button is clicked we are unmounting or removing the "home" component,
+So when the component is about to be removed, method "7" gets executed
+Try clicking on this button we can see the console "component will be unmounted"
+and then it's removed from the page.
